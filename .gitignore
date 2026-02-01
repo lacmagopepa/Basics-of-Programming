@@ -1,0 +1,35 @@
+# Python virtual environment
+venv/
+env/
+ENV/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Game saves and logs (optional - remove if you want to track these)
+saves/
+logs/
+exports/*.csv
+!exports/batch/.gitkeep
+
+# Temporary files
+*.tmp
+*.bak
+*.log

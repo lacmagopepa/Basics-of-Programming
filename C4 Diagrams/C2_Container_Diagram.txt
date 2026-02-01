@@ -1,0 +1,279 @@
+================================================================================
+                    BEER GAME 2.0 - C2 CONTAINER DIAGRAM
+                          Container Level View
+================================================================================
+
+System: Beer Distribution Game Simulator
+Purpose: Interactive supply chain simulation for teaching the bullwhip effect
+Users: 1-4 human players (students, professionals learning supply chain)
+
+================================================================================
+                              CONTAINERS
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│                                                                          │
+│                      1. DESKTOP APPLICATION (Pygame UI)                  │
+│                                                                          │
+│  Technology: Python 3.10+, Pygame                                        │
+│  Purpose: Main interactive user interface for gameplay                   │
+│                                                                          │
+│  Key Components:                                                         │
+│    • Login Screen (auth_screen.py)                                       │
+│    • Configuration Screen (config_screen.py)                             │
+│    • Game Screen (game_screen.py)                                        │
+│    • End/Results Screen (end_screen.py)                                  │
+│    • Analysis Screen (analysis_screen.py)                                │
+│    • Sound Manager (sound_manager.py)                                    │
+│    • UI Widgets (widgets.py)                                             │
+│                                                                          │
+│  Entry Point: main.py                                                    │
+│  Location: /ui/, /ui/screens/                                            │
+│                                                                          │
+│  Responsibilities:                                                       │                                   │
+│    - Handle user input (mouse, keyboard)                                 │
+│    - Display tier states, inventory, costs                               │
+│    - Play sound effects for actions                                      │
+│    - Support window resizing (1280x720 default)                          │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ Uses
+                                    ↓
+┌──────────────────────────────────────────────────────────────────────────┐
+│                                                                          │
+│                      2. SIMULATION ENGINE                                │
+│                                                                          │
+│  Technology: Python                                                      │
+│  Purpose: Core business logic for supply chain simulation               │
+│                                                                          │
+│  Key Components:                                                         │
+│    • Simulation Engine (simulation_engine.py)                            │
+│    • Tier State Manager (tier_state.py)                                  │
+│    • Cost Calculator (cost_calculator.py)                                │
+│    • Demand Generator (demand_generator.py)                              │
+│    • Logger (logger.py)                                                  │
+│                                                                          │
+│  Location: /simulation/                                                  │
+│                                                                          │
+│  Responsibilities:                                                       │
+│    - Manage 4-tier supply chain (Retailer→Wholesaler→Distributor→Factory)│
+│    - Process weekly simulation steps:                                    │
+│      1. Process customer demand                                          │
+│      2. Receive delayed shipments                                        │
+│      3. Ship available inventory downstream                              │
+│      4. Place orders upstream (with delay)                               │
+│      5. Factory production                                               │
+│      6. Calculate costs (holding, backlog, production)                   │
+│    - Track inventory, backlog, orders, shipments                         │
+│    - Apply lead times (shipping, information, production)                │
+│    - Generate demand patterns (constant, random, step)                   │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ Uses
+                                    ↓
+┌──────────────────────────────────────────────────────────────────────────┐
+│                                                                          │
+│                       3. AI POLICY SYSTEM                                │
+│                                                                          │
+│  Technology: Python                                                      │
+│  Purpose: Automated decision-making for non-human controlled tiers       │
+│                                                                          │
+│  Key Components:                                                         │
+│    • Base Stock Policy (base_stock.py)                                   │
+│    • PI Controller (pi.py)                                               │
+│    • Policy Manager (policy_manager.py)                                  │
+│                                                                          │
+│  Location: /ai_policies/                                                 │
+│                                                                          │
+│  Responsibilities:                                                       │
+│    - Calculate order quantities for AI-controlled tiers                  │
+│    - Base Stock: Order = Demand + (Target - Current Inventory)           │
+│    - PI Controller: Proportional-Integral feedback control               │
+│    - Manage policy selection and configuration                           │
+│    - Provide consistent AI behavior across game sessions                 │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│                                                                          │
+│                       4. PERSISTENCE LAYER                               │
+│                                                                          │
+│  Technology: Python with CSV/JSON                                        │
+│  Purpose: Data export, logging, and game state management               │
+│                                                                          │
+│  Key Components:                                                         │
+│    • CSV Exporter (csv_export.py)                                        │
+│    • Analysis Tools (analysis_tools.py)                                  │
+│    • Game State Manager                                                  │
+│                                                                          │
+│  Location: /persistence/, /saves/, /logs/, /exports/                     │
+│                                                                          │
+│  Responsibilities:                                                       │
+│    - Export game logs to CSV format                                      │
+│    - Save/load game state as JSON                                        │
+│    - Store weekly metrics (inventory, orders, costs)                     │
+│    - Provide data for post-game analysis                                 │
+│    - Support batch exports                                               │
+│                                                                          │
+│  Data Stored:                                                            │
+│    • game_state.json - Current game configuration and state              │
+│    • game_log.csv - Week-by-week metrics for all tiers                   │
+│    • game.csv - Detailed transaction logs                                │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│                                                                          │
+│                     5. ANALYSIS NOTEBOOK                                 │
+│                                                                          │
+│  Technology: Jupyter Notebook, Pandas, Matplotlib, NumPy                 │
+│  Purpose: Post-game analysis and visualization                           │
+│                                                                          │
+│  Key Components:                                                         │
+│    • BeerGame_Analysis.ipynb                                             │
+│                                                                          │
+│  Location: /analysis/                                                    │
+│                                                                          │
+│  Responsibilities:                                                       │
+│    - Load and analyze CSV export data                                    │
+│    - Visualize bullwhip effect across tiers                              │
+│    - Calculate variance amplification ratios                             │
+│    - Generate cost breakdowns and trends                                 │
+│    - Create time-series plots (inventory, orders, demand)                │
+│    - Provide interactive analysis tools                                  │
+│                                                                          │
+│  Launched via: run_notebook.bat / run_notebook.ps1                       │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                          EXTERNAL SYSTEMS
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│  FILE SYSTEM                                                             │
+│  • Stores game states, logs, exports                                     │
+│  • Accessed by: Persistence Layer, Analysis Notebook                     │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│  AUDIO SYSTEM (Pygame Mixer)                                             │
+│  • Provides sound effects                                                │
+│  • Managed by: Sound Manager in Desktop Application                      │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                            DATA FLOW
+================================================================================
+
+1. PLAYER → Desktop Application (Pygame UI)
+   ↓
+2. Pygame UI → Simulation Engine [places orders, requests state]
+   ↓
+3. Simulation Engine → AI Policy System [gets AI orders]
+   ↓
+4. Simulation Engine → Persistence Layer [logs weekly data]
+   ↓
+5. Persistence Layer → File System [writes CSV/JSON]
+   ↓
+6. File System → Analysis Notebook [reads CSV for visualization]
+
+
+================================================================================
+                      CONTAINER INTERACTIONS
+================================================================================
+
+Desktop Application ←→ Simulation Engine
+  • Sends: Player orders, configuration settings
+  • Receives: Tier states, costs, inventory levels, game status
+
+Simulation Engine → AI Policy System
+  • Sends: Current tier state (inventory, backlog, incoming orders)
+  • Receives: Calculated order quantities
+
+Simulation Engine → Persistence Layer
+  • Sends: Weekly metrics, game events
+  • Receives: Saved game states (on load)
+
+Persistence Layer → File System
+  • Writes: game_state.json, game_log.csv, game.csv
+  • Reads: Previous game states
+
+Analysis Notebook ← File System
+  • Reads: game_log.csv, game.csv for post-game analysis
+
+
+================================================================================
+                       DEPLOYMENT MODEL
+================================================================================
+
+Deployment Type: Standalone Desktop Application (Windows)
+Runtime: Portable Python environment included
+
+Launch Scripts:
+  • run_game.bat / run_game.ps1 - Start game
+  • run_notebook.bat / run_notebook.ps1 - Start analysis
+
+Configuration:
+  • config.py - Global game parameters
+  • requirements.txt - Python dependencies
+
+
+================================================================================
+                     TECHNOLOGY DECISIONS
+================================================================================
+
+Pygame:
+  ✓ Cross-platform 2D graphics
+  ✓ Built-in event handling
+  ✓ Sound support
+  ✓ Easy to learn
+
+Python:
+  ✓ Rapid development
+  ✓ Rich scientific/data libraries
+  ✓ Readable code for educational context
+
+CSV/JSON:
+  ✓ Human-readable data formats
+  ✓ Easy to import into analysis tools
+  ✓ Simple file-based persistence
+
+Jupyter:
+  ✓ Interactive analysis environment
+  ✓ Inline visualizations
+  ✓ Great for teaching/learning
+
+
+================================================================================
+                        QUALITY ATTRIBUTES
+================================================================================
+
+Usability:
+  • Resizable window
+  • Sound effects for feedback
+  • Clear UI screens for each game phase
+  • In-game analysis preview
+
+Maintainability:
+  • Modular architecture (UI, simulation, AI separate)
+  • Clear separation of concerns
+  • Documented code structure
+
+Educational Value:
+  • Visualizes supply chain dynamics
+  • Exports data for analysis
+  • Multiple AI policies to compare strategies
+  • Bullwhip effect demonstration
+
+Performance:
+  • Handles 4 tiers with multiple weeks efficiently
+  • Real-time simulation updates
+
+

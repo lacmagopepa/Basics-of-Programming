@@ -1,0 +1,12 @@
+# Core game dependencies
+pygame>=2.5.0
+
+# Data analysis and scientific computing
+numpy>=1.24.0
+pandas>=2.0.0
+matplotlib>=3.7.0
+
+# Jupyter notebook support
+jupyter>=1.0.0
+notebook>=7.0.0
+ipykernel>=6.25.0
